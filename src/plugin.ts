@@ -2,7 +2,7 @@ import type {
   rollup as Rollup,
   Plugin as RollupPlugin,
   InputOptions,
-} from 'vite/node_modules/rollup'
+} from 'rollup'
 import { Plugin as VitePlugin, BuildConfig } from 'vite'
 import DeviceDetector from 'device-detector-js'
 import path from 'path'
@@ -72,7 +72,7 @@ export default ({
       },
     })
 
-    const rollup = require('vite/node_modules/rollup').rollup as typeof Rollup
+    const rollup = require('rollup').rollup as typeof Rollup
     return {
       configureBuild(config, builds) {
         const { plugins = [] } = config.rollupInputOptions
