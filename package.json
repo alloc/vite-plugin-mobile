@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-mobile",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Generate a mobile bundle",
   "author": "Alec Larson",
   "license": "MIT",
