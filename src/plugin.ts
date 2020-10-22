@@ -44,8 +44,8 @@ export default ({
     uniqueRoots.find(root => id.startsWith(root + '/'))
 
   if (isBuild) {
-    const createResolverPlugin = (
-      deviceType: 'mobile' | 'tablet',
+    const createRedirectPlugin = (
+      deviceType: 'mobile' | 'tablet' | 'desktop',
       config: Readonly<BuildConfig>
     ): RollupPlugin => ({
       name: 'vite-mobile:resolver',
@@ -89,7 +89,7 @@ export default ({
             return rollup({
               ...inputOptions,
               plugins: [
-                createResolverPlugin(deviceType, config),
+                createRedirectPlugin(deviceType, config),
                 ...inputOptions.plugins!.filter(
                   plugin => plugin.name !== 'vite-mobile:init'
                 ),
@@ -106,6 +106,11 @@ export default ({
             builds.push(createBuild('mobile', inputOptions))
             if (uniqueRoots.length > 2)
               builds.push(createBuild('tablet', inputOptions))
+
+            // The desktop bundle needs to redirect mobile/tablet imports.
+            inputOptions.plugins!.unshift(
+              createRedirectPlugin('desktop', config)
+            )
 
             return null
           },
