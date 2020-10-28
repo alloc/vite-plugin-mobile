@@ -43,13 +43,3 @@ export default {
 - The mobile bundle is used by `dist/index.mobile.html`.
 - When `tabletRoot` is unique, a separate tablet-only bundle is generated and
   used by `dist/index.tablet.html`.
-
-&nbsp;
-
-### Compatibility
-
-The latest version of Vite does *not* support this plugin.
-
-You need to clone Vite locally and checkout this PR:
-
-- https://github.com/vitejs/vite/pull/878
