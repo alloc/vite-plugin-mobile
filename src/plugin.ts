@@ -72,7 +72,6 @@ export default ({
       },
     })
 
-    const rollup = require('rollup').rollup as typeof Rollup
     return {
       configureBuild(config, builds) {
         const { pluginsPreBuild = [] } = config.rollupInputOptions
@@ -85,16 +84,14 @@ export default ({
           // Emit "index.mobile.html" or "index.tablet.html"
           id: 'index.' + deviceType,
           // Wait until preceding bundles are finished.
-          get bundle() {
-            return rollup({
-              ...inputOptions,
-              plugins: [
-                createRedirectPlugin(deviceType, config),
-                ...inputOptions.plugins!.filter(
-                  plugin => plugin.name !== 'vite-mobile:init'
-                ),
-              ],
-            })
+          options: {
+            ...inputOptions,
+            plugins: [
+              createRedirectPlugin(deviceType, config),
+              ...inputOptions.plugins!.filter(
+                plugin => plugin.name !== 'vite-mobile:init'
+              ),
+            ],
           },
         })
 
