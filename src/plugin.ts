@@ -75,8 +75,8 @@ export default ({
     const rollup = require('rollup').rollup as typeof Rollup
     return {
       configureBuild(config, builds) {
-        const { plugins = [] } = config.rollupInputOptions
-        config.rollupInputOptions.plugins = plugins
+        const { pluginsPreBuild = [] } = config.rollupInputOptions
+        config.rollupInputOptions.pluginsPreBuild = pluginsPreBuild
 
         const createBuild = (
           deviceType: 'mobile' | 'tablet',
@@ -100,7 +100,7 @@ export default ({
 
         // The mobile/tablet builds need the same options used by
         // the desktop build, so we must wait for them.
-        plugins.push({
+        pluginsPreBuild.push({
           name: 'vite-mobile:init',
           options(inputOptions) {
             builds.push(createBuild('mobile', inputOptions))
