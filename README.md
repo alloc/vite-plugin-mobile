@@ -43,3 +43,4 @@ export default {
 - The mobile bundle is used by `dist/index.mobile.html`.
 - When `tabletRoot` is unique, a separate tablet-only bundle is generated and
   used by `dist/index.tablet.html`.
+- In production, your server will need to manually detect which `.html` page is appropriate based on the `User-Agent` request header.
