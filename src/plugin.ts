@@ -1,8 +1,4 @@
-import type {
-  rollup as Rollup,
-  Plugin as RollupPlugin,
-  InputOptions,
-} from 'rollup'
+import type { Plugin as RollupPlugin, InputOptions } from 'rollup'
 import { Plugin as VitePlugin, BuildConfig } from 'vite'
 import DeviceDetector from 'device-detector-js'
 import path from 'path'
