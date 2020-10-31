@@ -1,4 +1,4 @@
-import type { Plugin as RollupPlugin, InputOptions } from 'rollup'
+import type { Plugin as RollupPlugin } from 'rollup'
 import { Plugin as VitePlugin, BuildConfig } from 'vite'
 import DeviceDetector from 'device-detector-js'
 import path from 'path'
@@ -73,32 +73,30 @@ export default ({
         const { pluginsPreBuild = [] } = config.rollupInputOptions
         config.rollupInputOptions.pluginsPreBuild = pluginsPreBuild
 
-        const createBuild = (
-          deviceType: 'mobile' | 'tablet',
-          inputOptions: Readonly<InputOptions>
-        ) => ({
-          // Emit "index.mobile.html" or "index.tablet.html"
-          id: 'index.' + deviceType,
-          // Wait until preceding bundles are finished.
-          options: {
-            ...inputOptions,
-            plugins: [
-              createRedirectPlugin(deviceType, config),
-              ...inputOptions.plugins!.filter(
-                plugin => plugin.name !== 'vite-mobile:init'
-              ),
-            ],
+        const createBuild = (deviceType: 'mobile' | 'tablet') => ({
+          ...builds[0],
+          input: 'index.html',
+          output: {
+            ...builds[0].output,
+            file: `index.${deviceType}.html`,
           },
+          plugins: [
+            createRedirectPlugin(deviceType, config),
+            ...builds[0].plugins!.filter(
+              plugin => plugin.name !== 'vite-mobile:init'
+            ),
+          ],
         })
 
-        // The mobile/tablet builds need the same options used by
-        // the desktop build, so we must wait for them.
         pluginsPreBuild.push({
           name: 'vite-mobile:init',
           options(inputOptions) {
-            builds.push(createBuild('mobile', inputOptions))
-            if (uniqueRoots.length > 2)
-              builds.push(createBuild('tablet', inputOptions))
+            // The desktop build now exists, so we can copy its Rollup options
+            // for the mobile/tablet builds.
+            builds.push(createBuild('mobile'))
+            if (uniqueRoots.length > 2) {
+              builds.push(createBuild('tablet'))
+            }
 
             // The desktop build needs to redirect mobile/tablet imports.
             inputOptions.plugins = inputOptions.plugins!.concat(
