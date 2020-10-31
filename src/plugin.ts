@@ -100,8 +100,8 @@ export default ({
             if (uniqueRoots.length > 2)
               builds.push(createBuild('tablet', inputOptions))
 
-            // The desktop bundle needs to redirect mobile/tablet imports.
-            inputOptions.plugins!.unshift(
+            // The desktop build needs to redirect mobile/tablet imports.
+            inputOptions.plugins = inputOptions.plugins!.concat(
               createRedirectPlugin('desktop', config)
             )
 
