@@ -3,7 +3,7 @@ import { Plugin as VitePlugin, BuildConfig } from 'vite'
 import wantsMobile from 'wants-mobile'
 import path from 'path'
 
-const isBuild = process.argv[2] == 'build'
+const isBuildMode = process.argv[2] == 'build'
 
 type Config = {
   /**
@@ -31,7 +31,7 @@ export default ({
   const findRoot = (id: string) =>
     Object.values(roots).find(root => id.startsWith(root + '/'))
 
-  if (isBuild) {
+  if (isBuildMode) {
     const createRedirectPlugin = (
       deviceType: 'mobile' | 'desktop',
       config: Readonly<BuildConfig>
