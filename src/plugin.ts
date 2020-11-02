@@ -16,11 +16,6 @@ type Config = {
    * @default "/src/desktop"
    */
   desktopRoot?: string
-  /**
-   * The directory containing tablet-only modules.
-   * @default this.mobileRoot
-   */
-  tabletRoot?: string
 }
 
 const NODE_MODULES_DIR = path.sep + 'node_modules' + path.sep
@@ -28,20 +23,17 @@ const NODE_MODULES_DIR = path.sep + 'node_modules' + path.sep
 export default ({
   mobileRoot = '/src/mobile',
   desktopRoot = '/src/desktop',
-  tabletRoot = mobileRoot,
 }: Config = {}): VitePlugin => {
   const roots = {
     mobile: mobileRoot,
     desktop: desktopRoot,
-    tablet: tabletRoot,
   }
-  const uniqueRoots = uniq(roots)
   const findRoot = (id: string) =>
-    uniqueRoots.find(root => id.startsWith(root + '/'))
+    Object.values(roots).find(root => id.startsWith(root + '/'))
 
   if (isBuild) {
     const createRedirectPlugin = (
-      deviceType: 'mobile' | 'tablet' | 'desktop',
+      deviceType: 'mobile' | 'desktop',
       config: Readonly<BuildConfig>
     ): RollupPlugin => ({
       name: 'vite-mobile:resolver',
@@ -69,38 +61,42 @@ export default ({
     })
 
     return {
-      configureBuild(config, builds) {
-        const { pluginsPreBuild = [] } = config.rollupInputOptions
-        config.rollupInputOptions.pluginsPreBuild = pluginsPreBuild
-
-        const createBuild = (deviceType: 'mobile' | 'tablet') => ({
-          ...builds[0],
+      configureBuild(viteConfig, builds) {
+        type ViteBuild = typeof builds[number]
+        const mobileBuild: ViteBuild = {
           input: 'index.html',
-          output: {
-            ...builds[0].output,
-            file: `index.${deviceType}.html`,
-          },
-          plugins: [
-            createRedirectPlugin(deviceType, config),
-            ...builds[0].plugins!.filter(
-              plugin => plugin.name !== 'vite-mobile:init'
-            ),
-          ],
-        })
+          output: { file: 'index.mobile.html' },
+        }
+
+        // Add the mobile build now to respect plugin order.
+        // It won't start until the main build is finished.
+        builds.push(mobileBuild)
+
+        const { pluginsPreBuild = [] } = viteConfig.rollupInputOptions
+        viteConfig.rollupInputOptions.pluginsPreBuild = pluginsPreBuild
 
         pluginsPreBuild.push({
           name: 'vite-mobile:init',
           options(inputOptions) {
-            // The desktop build now exists, so we can copy its Rollup options
-            // for the mobile/tablet builds.
-            builds.push(createBuild('mobile'))
-            if (uniqueRoots.length > 2) {
-              builds.push(createBuild('tablet'))
-            }
+            // Inherit options from the main build.
+            Object.assign(mobileBuild, {
+              ...builds[0],
+              ...mobileBuild,
+              output: {
+                ...builds[0].output,
+                ...mobileBuild.output,
+              },
+              plugins: [
+                createRedirectPlugin('mobile', viteConfig),
+                ...inputOptions.plugins!.filter(
+                  plugin => plugin.name !== 'vite-mobile:init'
+                ),
+              ],
+            })
 
-            // The desktop build needs to redirect mobile/tablet imports.
+            // The main build needs to redirect mobile imports.
             inputOptions.plugins = inputOptions.plugins!.concat(
-              createRedirectPlugin('desktop', config)
+              createRedirectPlugin('desktop', viteConfig)
             )
 
             return null
@@ -133,8 +129,4 @@ export default ({
       })
     },
   }
-}
-
-function uniq<T>(values: { [key: string]: T }) {
-  return Array.from(new Set(Object.values(values)))
 }
