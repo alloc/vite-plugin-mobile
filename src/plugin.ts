@@ -1,6 +1,6 @@
 import type { Plugin as RollupPlugin } from 'rollup'
 import { Plugin as VitePlugin, BuildConfig } from 'vite'
-import DeviceDetector from 'device-detector-js'
+import wantsMobile from 'wants-mobile'
 import path from 'path'
 
 const isBuild = process.argv[2] == 'build'
@@ -108,18 +108,11 @@ export default ({
 
   return {
     configureServer({ app }) {
-      const parser = new DeviceDetector({ skipBotDetection: true })
       app.use(async (ctx, next) => {
         if (!ctx.path.startsWith('/@modules/')) {
           const moduleRoot = findRoot(ctx.path)
           if (moduleRoot) {
-            const { device } = parser.parse(ctx.get('User-Agent'))
-            const deviceType =
-              (device &&
-                ((/tablet/.test(device.type) && 'tablet') ||
-                  (/phone/.test(device.type) && 'mobile'))) ||
-              'desktop'
-
+            const deviceType = wantsMobile(ctx.headers) ? 'mobile' : 'desktop'
             if (moduleRoot !== roots[deviceType]) {
               ctx.path = ctx.path.replace(moduleRoot, roots[deviceType])
             }

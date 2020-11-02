@@ -19,7 +19,7 @@
     "vite": "*"
   },
   "dependencies": {
-    "device-detector-js": "^2.2.2"
+    "wants-mobile": "^1.0.0"
   },
   "devDependencies": {
     "esbuild": "0.7.2",
