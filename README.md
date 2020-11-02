@@ -28,10 +28,6 @@ export default {
   The directory containing desktop-only modules.  
   Defaults to `"/src/desktop"`
 
-- `tabletRoot: string`  
-  The directory containing tablet-only modules.  
-  Defaults to `this.mobileRoot`
-
 &nbsp;
 
 ### Notes
@@ -41,6 +37,4 @@ export default {
 - Your `index.html` is rendered once per bundle.
 - The desktop bundle is used by `dist/index.html`.
 - The mobile bundle is used by `dist/index.mobile.html`.
-- When `tabletRoot` is unique, a separate tablet-only bundle is generated and
-  used by `dist/index.tablet.html`.
 - In production, your server will need to manually detect which `.html` page is appropriate based on the `User-Agent` request header.
