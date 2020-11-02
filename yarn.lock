@@ -697,11 +697,6 @@ destroy@^1.0.4:
   resolved "https://registry.npmjs.org/destroy/-/destroy-1.0.4.tgz#978857442c44749e4206613e37946205826abd80"
   integrity sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA=
 
-device-detector-js@^2.2.2:
-  version "2.2.5"
-  resolved "https://registry.npmjs.org/device-detector-js/-/device-detector-js-2.2.5.tgz#3a05b61ba534cb9d20a670ce051d797fc5519ec7"
-  integrity sha512-TW9TJRjzCv0TD5hKiVcgqxq5egT14NVwPg7jBv84h4qjpc4weVtEuYEtMfgtXAsV+NUU9oKSme2Gvm4nSoNn+A==
-
 dir-glob@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/dir-glob/-/dir-glob-3.0.1.tgz#56dbf73d992a4a93ba1584f4534063fd2e41717f"
@@ -2098,6 +2093,11 @@ vue@^3.0.0-rc.5:
     "@vue/compiler-dom" "3.0.2"
     "@vue/runtime-dom" "3.0.2"
     "@vue/shared" "3.0.2"
+
+wants-mobile@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/wants-mobile/-/wants-mobile-1.0.0.tgz#b831934d311c6b9f1bc8c8df48c7fdc3ddd46b8e"
+  integrity sha512-gRvl0ulAiBe+Peyz0sQVMZHUro3yMGAS/0BEKGMaS1LJOQermafyhQZ+DtKnzGj+52SVgnZKg/ahKlD/ZIjueQ==
 
 wcwidth@^1.0.1:
   version "1.0.1"
