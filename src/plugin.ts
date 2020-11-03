@@ -61,8 +61,8 @@ export default ({
     })
 
     return {
-      configureBuild(viteConfig, builds) {
-        type ViteBuild = typeof builds[number]
+      configureBuild(ctx) {
+        type ViteBuild = typeof ctx.builds[number]
         const mobileBuild: ViteBuild = {
           input: 'index.html',
           output: { file: 'index.mobile.html' },
@@ -70,37 +70,32 @@ export default ({
 
         // Add the mobile build now to respect plugin order.
         // It won't start until the main build is finished.
-        builds.push(mobileBuild)
+        ctx.build(mobileBuild)
+        ctx.beforeEach((nextBuild, i) => {
+          if (nextBuild == mobileBuild) {
+            const task = ctx.log.start(`Building mobile bundle...`)
+            mobileBuild.onResult = () => task.done()
+          }
 
-        const { pluginsPreBuild = [] } = viteConfig.rollupInputOptions
-        viteConfig.rollupInputOptions.pluginsPreBuild = pluginsPreBuild
+          // The main build is always first.
+          if (i > 0) return
 
-        pluginsPreBuild.push({
-          name: 'vite-mobile:init',
-          options(inputOptions) {
-            // Inherit options from the main build.
-            Object.assign(mobileBuild, {
-              ...builds[0],
-              ...mobileBuild,
-              output: {
-                ...builds[0].output,
-                ...mobileBuild.output,
-              },
-              plugins: [
-                createRedirectPlugin('mobile', viteConfig),
-                ...inputOptions.plugins!.filter(
-                  plugin => plugin.name !== 'vite-mobile:init'
-                ),
-              ],
-            })
+          // Inherit options from the main build.
+          Object.assign(mobileBuild, {
+            ...nextBuild,
+            ...mobileBuild,
+            output: {
+              ...nextBuild.output,
+              ...mobileBuild.output,
+            },
+            plugins: [
+              createRedirectPlugin('mobile', ctx),
+              ...nextBuild.plugins!,
+            ],
+          })
 
-            // The main build needs to redirect mobile imports.
-            inputOptions.plugins = inputOptions.plugins!.concat(
-              createRedirectPlugin('desktop', viteConfig)
-            )
-
-            return null
-          },
+          // The main build needs to redirect mobile imports.
+          nextBuild.plugins!.unshift(createRedirectPlugin('desktop', ctx))
         })
       },
     }
