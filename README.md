@@ -16,6 +16,8 @@ export default {
 }
 ```
 
+> Tip: Install `vite-plugin-mobile@next` for `vite@2` compatibility!
+
 &nbsp;
 
 ### Options
