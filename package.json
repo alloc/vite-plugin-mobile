@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
-    "rollup": "^2.26.11",
+    "rollup": "^2.35.1",
     "wants-mobile": "^1.0.2"
   },
   "devDependencies": {
