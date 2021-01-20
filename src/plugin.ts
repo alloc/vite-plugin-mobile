@@ -40,8 +40,8 @@ export default ({
   return {
     name: 'vite-mobile',
     enforce: 'pre',
-    configResolved(vite) {
-      if (vite.command !== 'build') return
+    configResolved({ command, mode, root, logger }) {
+      if (command !== 'build') return
 
       this.resolveId = async function (id, importer) {
         // Skip imports from node_modules.
@@ -53,11 +53,11 @@ export default ({
             skipSelf: true,
           })
           if (resolved) {
-            const moduleId = '/' + path.relative(vite.root, resolved.id)
+            const moduleId = '/' + path.relative(root, resolved.id)
             const moduleRoot = findRoot(moduleId)
             if (moduleRoot)
               return path.join(
-                vite.root,
+                root,
                 moduleId.replace(moduleRoot, roots[deviceType])
               )
           }
@@ -72,14 +72,14 @@ export default ({
               process.env.VITE_MOBILE = '1'
               const { plugins }: any = await resolveConfig(
                 mobileConfig,
-                vite.command,
-                vite.mode
+                command,
+                mode
               )
               process.env.VITE_MOBILE = ''
 
               const { rollup } = require('rollup') as typeof import('rollup')
 
-              vite.logger.info(chalk.cyan('creating mobile bundle...'))
+              logger.info(chalk.cyan('creating mobile bundle...'))
               const mobileBundle = await rollup({
                 ...inputOptions,
                 plugins,
