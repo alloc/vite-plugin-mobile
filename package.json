@@ -5,14 +5,13 @@
   "author": "Alec Larson",
   "license": "MIT",
   "repository": "alloc/vite-plugin-mobile",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/plugin.js",
   "files": [
     "src",
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "tsc -p .",
     "prepare": "yarn build"
   },
   "peerDependencies": {
@@ -25,10 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^14.14.19",
-    "esbuild": "^0.8.0",
     "prettier": "^2.0.5",
-    "rollup-plugin-dts": "^1.4.10",
-    "rollup-plugin-esbuild": "^2.4.2",
     "typescript": "^4.0.0",
     "vite": "latest"
   },
