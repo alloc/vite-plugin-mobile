@@ -34,7 +34,7 @@ export default ({
   const findRoot = (id: string) =>
     Object.values(roots).find(root => id.startsWith(root + '/'))
 
-  const isMobile = !!process.env.VITE_MOBILE
+  const isMobile = !!process.env.IS_MOBILE
   const deviceType = isMobile ? 'mobile' : 'desktop'
 
   return {
@@ -69,13 +69,13 @@ export default ({
           inputOptions.plugins!.push({
             name: 'vite-mobile:generate',
             async generateBundle(outputOptions, bundle) {
-              process.env.VITE_MOBILE = '1'
+              process.env.IS_MOBILE = '1'
               const { plugins }: any = await resolveConfig(
                 mobileConfig,
                 command,
                 mode
               )
-              process.env.VITE_MOBILE = ''
+              process.env.IS_MOBILE = ''
 
               const { rollup } = require('rollup') as typeof import('rollup')
 
