@@ -28,6 +28,9 @@ export default {
   The directory containing desktop-only modules.  
   Defaults to `"/src/desktop"`
 
+- `mobileConfig: ViteConfig`  
+  Vite configuration for the mobile bundle only.
+
 &nbsp;
 
 ### Notes
