@@ -35,6 +35,7 @@ export default {
 
 ### Notes
 
+- Your `vite.config.js` module is executed twice (for desktop then mobile). Your config can check if `process.env.IS_MOBILE` is truthy if it needs to disable certain plugins for the mobile bundle.
 - "Common chunks" are *not* generated, so bundles *will* contain duplicate modules.
 - Assets in `public/` are shared between bundles.
 - Your `index.html` is rendered once per bundle.
