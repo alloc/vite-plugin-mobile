@@ -99,8 +99,8 @@ export default ({
           return null
         }
     },
-    configureServer({ app }) {
-      app.use(async (req, _, next) => {
+    configureServer({ middlewares }) {
+      middlewares.use(async (req, _, next) => {
         if (req.url && !req.url.startsWith('/@')) {
           const moduleRoot = findRoot(req.url)
           if (moduleRoot) {
