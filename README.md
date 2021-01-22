@@ -41,4 +41,4 @@ export default {
 - Your `index.html` is rendered once per bundle.
 - The desktop bundle is used by `${outDir}/index.html`.
 - The mobile bundle is used by `${outDir}/index.mobile.html`.
-- In production, your server will need to manually detect which `.html` page is appropriate based on the `User-Agent` request header.
+- In production, your server will need to manually detect which `.html` page is appropriate based on the `User-Agent` request header. You can use [`wants-mobile`](https://github.com/alloc/wants-mobile) for this.
