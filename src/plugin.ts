@@ -94,6 +94,8 @@ export default ({
                   bundle[asset.fileName] = asset
                 }
               }
+
+              await mobileBundle.close()
             },
           })
           return null
