@@ -89,6 +89,11 @@ export default (opts: PluginOptions = {}): VitePlugin => {
                 }
               }
 
+              // Skip the `closeBundle` hook of vite:esbuild or parallel builds will break.
+              plugins.find(
+                plugin => plugin.name == 'vite:esbuild-transpile'
+              )!.closeBundle = void 0
+
               await mobileBundle.close()
             },
           })
