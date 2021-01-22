@@ -1,9 +1,9 @@
-import { resolveConfig, Plugin as VitePlugin, UserConfig } from 'vite'
+import { resolveConfig, Plugin as VitePlugin } from 'vite'
 import wantsMobile from 'wants-mobile'
 import chalk from 'chalk'
 import path from 'path'
 
-type Config = {
+interface PluginOptions {
   /**
    * The directory containing phone-only modules.
    * @default "/src/mobile"
@@ -15,21 +15,19 @@ type Config = {
    */
   desktopRoot?: string
   /**
-   * Mobile-only Vite configuration
+   * Vite plugins only for the mobile bundle.
+   *
+   * Note: These plugins only run on `vite build`.
    */
-  mobileConfig?: UserConfig
+  mobilePlugins?: VitePlugin[]
 }
 
 const NODE_MODULES_DIR = path.sep + 'node_modules' + path.sep
 
-export default ({
-  mobileRoot = '/src/mobile',
-  desktopRoot = '/src/desktop',
-  mobileConfig = {},
-}: Config = {}): VitePlugin => {
+export default (opts: PluginOptions = {}): VitePlugin => {
   const roots = {
-    mobile: mobileRoot,
-    desktop: desktopRoot,
+    mobile: opts.mobileRoot || '/src/mobile',
+    desktop: opts.desktopRoot || '/src/desktop',
   }
   const findRoot = (id: string) =>
     Object.values(roots).find(root => id.startsWith(root + '/'))
@@ -70,11 +68,7 @@ export default ({
             name: 'vite-mobile:generate',
             async generateBundle(outputOptions, bundle) {
               process.env.IS_MOBILE = '1'
-              const { plugins }: any = await resolveConfig(
-                mobileConfig,
-                command,
-                mode
-              )
+              const plugins = await loadMobilePlugins(mode, opts)
               process.env.IS_MOBILE = ''
 
               const { rollup } = require('rollup') as typeof import('rollup')
@@ -116,4 +110,13 @@ export default ({
       })
     },
   }
+}
+
+async function loadMobilePlugins(mode: string, opts: PluginOptions) {
+  const config = await resolveConfig(
+    { plugins: opts.mobilePlugins },
+    'build',
+    mode
+  )
+  return [...config.plugins]
 }
