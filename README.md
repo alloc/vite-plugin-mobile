@@ -39,6 +39,6 @@ export default {
 - "Common chunks" are *not* generated, so bundles *will* contain duplicate modules.
 - Assets in `public/` are shared between bundles.
 - Your `index.html` is rendered once per bundle.
-- The desktop bundle is used by `dist/index.html`.
-- The mobile bundle is used by `dist/index.mobile.html`.
+- The desktop bundle is used by `${outDir}/index.html`.
+- The mobile bundle is used by `${outDir}/index.mobile.html`.
 - In production, your server will need to manually detect which `.html` page is appropriate based on the `User-Agent` request header.
